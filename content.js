@@ -1,6 +1,20 @@
 // Helper function for rate limiting
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+function shouldCheckDomain(url) {
+    return new Promise(resolve => {
+        const domain = new URL(url).hostname
+            .replace(/^www\./, '');
+
+        chrome.storage.local.get(['watchedDomains'], result => {
+            const watchedDomains = result.watchedDomains || [];
+            resolve(watchedDomains.some(watched =>
+                domain.includes(watched) || watched.includes(domain)
+            ));
+        });
+    });
+}
+
 async function getIndexingDate(url) {
     return new Promise((resolve, reject) => {
         chrome.runtime.sendMessage({ action: "getAuthToken" }, async (authResponse) => {
@@ -67,12 +81,19 @@ async function getIndexingDate(url) {
 
 async function addIndexDatesToSERP() {
     const MAX_CONCURRENT_REQUESTS = 3;
-    let searchResults = Array.from(document.querySelectorAll("div.yuRUbf a"))
-        .filter(link => !link.href.includes('google.com'));
+    const searchResults = Array.from(document.querySelectorAll("div.yuRUbf a"));
+
+    // Filter results for watched domains only
+    const watchedResults = [];
+    for (const link of searchResults) {
+        if (await shouldCheckDomain(link.href)) {
+            watchedResults.push(link);
+        }
+    }
 
     // Process results in batches
-    for (let i = 0; i < searchResults.length; i += MAX_CONCURRENT_REQUESTS) {
-        const batch = searchResults.slice(i, i + MAX_CONCURRENT_REQUESTS);
+    for (let i = 0; i < watchedResults.length; i += MAX_CONCURRENT_REQUESTS) {
+        const batch = watchedResults.slice(i, i + MAX_CONCURRENT_REQUESTS);
         const checks = batch.map(link => {
             const url = link.href;
             const domain = new URL(url).hostname;

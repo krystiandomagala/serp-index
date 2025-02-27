@@ -2,24 +2,95 @@
 <html lang="pl">
 	<head>
 		<meta charset="UTF-8" />
-		<title>GSC Index Checker</title>
+		<title>GSC Checker</title>
 		<style>
 			body {
-				width: 300px;
-				padding: 10px;
+				width: 350px;
+				padding: 16px;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+					sans-serif;
+			}
+			.container {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+			}
+			h2 {
+				margin: 0;
+				color: #202124;
+				font-size: 18px;
+			}
+			.input-group {
+				display: flex;
+				gap: 8px;
+			}
+			input {
+				flex: 1;
+				padding: 8px 12px;
+				border: 1px solid #d5d7db;
+				border-radius: 4px;
+				font-size: 14px;
+			}
+			button {
+				background: #1a73e8;
+				color: white;
+				border: none;
+				padding: 8px 16px;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+			button:hover {
+				background: #1557b0;
+			}
+			.domains-list {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+			.domain-item {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 8px;
+				background: #efeff0;
+				border-radius: 4px;
+			}
+			.remove-btn {
+				background: #ff6877;
+				padding: 4px 8px;
+				font-size: 12px;
+			}
+			.remove-btn:hover {
+				background: #c93e4c;
+			}
+			#status {
+				font-size: 14px;
+				color: #5f6368;
+				min-height: 20px;
 			}
 			.error {
-				color: red;
+				color: #d93025;
+			}
+			.success {
+				color: #188038;
 			}
 		</style>
 	</head>
 	<body>
-		<h2>Sprawdź indeksację URL</h2>
-		<div id="authStatus"></div>
-		<button id="authButton">Zaloguj się</button>
-		<input type="text" id="urlInput" placeholder="Podaj URL" />
-		<button id="checkButton">Sprawdź</button>
-		<p id="result"></p>
+		<div class="container">
+			<h2>Zarządzaj domenami</h2>
+			<div class="input-group">
+				<input
+					type="text"
+					id="domainInput"
+					placeholder="Np. example.com"
+					autocomplete="off"
+					spellcheck="false" />
+				<button id="addDomain">Dodaj</button>
+			</div>
+			<div id="status"></div>
+			<div id="domainsList" class="domains-list"></div>
+		</div>
 		<script src="popup.js"></script>
 	</body>
 </html>
