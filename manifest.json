@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "SERP Index Checker",
+  "version": "1.0",
+  "permissions": [
+    "identity",
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.googleapis.com/*",
+    "https://searchconsole.googleapis.com/*",
+    "https://*.google.com/*"
+  ],
+  "oauth2": {
+    "client_id": "354713667871-brsdpvjsggjjhd3979h4e8ma8nfjjai1.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/webmasters"
+    ]
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.google.com/search?*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
+
